@@ -131,6 +131,7 @@
 			<manifest>
 				<attribute name="Vendor" value="Infostretch Corp." />
 				<attribute name="Built-By" value="${user.name}" />
+			    <attribute name="Main-Class" value="com.qmetry.qaf.automation.openapi.v3.CodeGeneratorCLI" />
 
 				<section name="Build-Info">
 					<attribute name="qaf-Build-Time" value="${build.timestamp}" />
@@ -169,7 +170,7 @@
 			</manifest>
 		</jar>
 	</target>
-	<target name="publish" depends="init, build">
+	<target name="publish" >
 		<!-- Determine build number from previously published revisions -->
 		<ivy:buildnumber resolver="${publish.resolver}" organisation="${ivy.organisation}" module="${ivy.module}" revision="${release.num}" />
 
