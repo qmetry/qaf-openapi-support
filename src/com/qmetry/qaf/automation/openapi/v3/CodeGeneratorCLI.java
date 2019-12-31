@@ -27,6 +27,7 @@ package com.qmetry.qaf.automation.openapi.v3;
 import static com.qmetry.qaf.automation.core.ConfigurationManager.getBundle;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.configuration.ConfigurationException;
 
@@ -51,7 +52,6 @@ public class CodeGeneratorCLI {
 	 * @throws ConfigurationException
 	 */
 	public static void main(String... args) throws ConfigurationException, IOException {
-
 		if (args != null && args.length > 0) {
 			getBundle().clearProperty("openapi.specUrl");
 			for (String arg : args) {
@@ -62,7 +62,9 @@ public class CodeGeneratorCLI {
 			}
 		}
 
+		System.out.println("Open API Specifications to process: " + Arrays.asList(getBundle().getStringArray("openapi.specUrl")));
 		for (String specUrl : getBundle().getStringArray("openapi.specUrl")) {
+			System.out.println("Processing: " + specUrl);
 			ParseOptions options = new ParseOptions();
 			options.setResolve(true);
 			options.setResolveFully(true);

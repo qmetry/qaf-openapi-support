@@ -8,8 +8,13 @@
 		<format property="build.timestamp" pattern="dd-MMM-yyyy HH:mm:ss" />
 	</tstamp>
 
-	<property name="bin.dir" value="${basedir}/bin" />
+	<property name="bin.dir" value="${basedir}/bin/src" />
+	<property name="bin.dir.test" value="${basedir}/bin/test" />
+
+
 	<property name="src.dir" value="${basedir}/src" />
+	<property name="test.dir" value="${basedir}/test" />
+
 	<property name="meta.dir" value="${basedir}/META-INF" />
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.8" />
@@ -21,6 +26,10 @@
 			<include name="*.jar" />
 			<include name="**/*.jar" />
 		</fileset>
+	</path>
+	<path id="test.classpath">
+		<path refid="build.classpath" />
+		<pathelement location="${bin.dir}" />
 	</path>
 
 	<!-- IVY -->
@@ -71,12 +80,13 @@
 	</target>
 	<target name="clean">
 		<delete dir="${bin.dir}" failonerror="false" />
+		<delete dir="${bin.dir.test}" failonerror="false" />
 		<delete dir="${dist.dir}" failonerror="false" />
 	</target>
 
 
 
-	<target depends="init" name="compile">
+	<target depends="init, clean" name="compile">
 		<mkdir dir="${bin.dir}" />
 		<echo level="info">--- compile (start) ---</echo>
 		<javac debug="false" destdir="${bin.dir}" source="${source}" target="${target}">
@@ -85,8 +95,30 @@
 		</javac>
 		<echo level="info">--- compile (finished) ---</echo>
 	</target>
+
+	<target depends="compile" name="test-compile">
+		<mkdir dir="${bin.dir.test}" />
+		<echo level="info">--- test compile (start) ---</echo>
+		<javac debug="false" destdir="${bin.dir.test}" source="${source}" target="${target}">
+			<src path="${test.dir}" />
+			<classpath refid="test.classpath" />
+		</javac>
+		<echo level="info">---test compile (finished) ---</echo>
+	</target>
+	<target name="test" depends="test-compile">
+		<taskdef resource="testngtasks" classpathref="test.classpath" />
+		<testng classpathref="test.classpath" workingDir="${test.dir}" outputDir="${bin.dir.test}/test-results" haltOnFailure="true" verbose="2">
+			<classpath location="${bin.dir}" />
+			<classpath location="${bin.dir.test}" />
+			<classfileset dir="${bin.dir.test}" includes="**/*.class" />
+
+
+			<sysproperty key="log4j.configuration" value="file:///${test.dir}/log4j.properties" />
+			<sysproperty key="outputDir" value="test-results" />
+		</testng>
+	</target>
 	<!-- ================================= target: build ================================= -->
-	<target name="build" depends="make-jar, gendoc, gensource" description="build framework, generate docs">
+	<target name="build" depends="test, make-jar, gendoc, gensource" description="build framework, generate docs">
 
 
 	</target>

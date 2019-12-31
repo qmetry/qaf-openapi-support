@@ -44,7 +44,7 @@ import com.qmetry.qaf.automation.ws.rest.RestTestBase;
 public class OpenApiSteps {
 
 	@QAFTestStep(description = "validate {requestCall} response with schema")
-	public static void validateResponseSchema(Object requestCall) {
+	public static boolean validateResponseSchema(Object requestCall) {
 
 		WsRequestBean bean = new WsRequestBean();
 		bean.fillData(requestCall);
@@ -66,5 +66,6 @@ public class OpenApiSteps {
 				Reporter.log(message.getMessage(), MessageTypes.Fail);
 			}
 		}
+		return !result.hasErrors();
 	}
 }

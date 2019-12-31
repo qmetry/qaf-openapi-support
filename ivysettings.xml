@@ -39,5 +39,7 @@
     <artifact name="${artifact.name}-javadoc" ext="jar" conf="development" type="javadoc"/>
     <artifact name="${artifact.name}-sources" ext="jar" conf="development" type="source"/>
 </publications>
-
+<signers>
+    <pgp name="${gpg.name}" password="${gpg.pwd}" />
+</signers>
 </ivysettings>
