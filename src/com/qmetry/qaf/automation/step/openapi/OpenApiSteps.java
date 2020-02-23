@@ -53,8 +53,7 @@ public class OpenApiSteps {
 		String specUrl = bean.getParameters().getOrDefault("specUrl", getBundle().getString("openapi.specUrl"))
 				.toString();
 
-		OpenApiInteractionValidator validator = new OpenApiInteractionValidator.Builder()
-				.withApiSpecificationUrl(specUrl).build();
+		OpenApiInteractionValidator validator = getValidator(specUrl);
 
 		com.qmetry.qaf.automation.ws.Response res = new RestTestBase().getResponse();
 		Response response = new SimpleResponse.Builder(res.getStatus().getStatusCode())
@@ -67,5 +66,15 @@ public class OpenApiSteps {
 			}
 		}
 		return !result.hasErrors();
+	}
+	private static OpenApiInteractionValidator getValidator(String specUrl){
+		String validatorKey = specUrl.replaceAll("\\W", "");
+		OpenApiInteractionValidator validator = (OpenApiInteractionValidator) getBundle().getObject(validatorKey);
+		if(null==validator){
+			validator = new OpenApiInteractionValidator.Builder()
+					.withApiSpecificationUrl(specUrl).build();
+			getBundle().setProperty(validatorKey,validator);
+		}
+		return validator;
 	}
 }
