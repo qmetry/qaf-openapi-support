@@ -12,7 +12,7 @@
 <ivy-module version="2.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-	<info organisation="com.qmetry" module="qaf-support-openapi" status="release"  revision="${ivy.revision}" />
+	<info organisation="com.qmetry" module="qaf-support-openapi" status="release"  revision="${release.num}" />
 	<configurations>
         <conf name="compile" description="Libraries needed for compilation" />
         <conf name="runtime" description="Libraries only needed at runtime" extends="compile" />
