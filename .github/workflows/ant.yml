@@ -17,4 +17,4 @@ jobs:
     steps:
     - name: Trigger parent project build
       run: |
-        curl -XPOST -H "authorization: Bearer ${{ secrets.QAF_ALL_BUILD_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/qmetry/qaf-parent/dispatches --data '{"event_type": "build_application"}'
+        curl -XPOST -u "${{ secrets.REPO_USER }}:${{ secrets.REPO_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/qmetry/qaf-parent/dispatches --data '{"event_type": "build_application"}'
