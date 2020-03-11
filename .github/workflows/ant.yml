@@ -25,6 +25,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Ant
-      run: ant -noinput -buildfile build.xml -Dskip.download=false -silent
       run: |
+        ant -noinput -buildfile build.xml -Dskip.download=false -silent
         curl -XPOST -u "${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/qmetry/qaf-parent/dispatches --data '{"event_type": "build_application"}'
