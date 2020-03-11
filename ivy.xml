@@ -12,7 +12,7 @@
 <ivy-module version="2.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-	<info organisation="com.qmetry" module="qaf-support-openapi" status="release"  revision="${release.num}" />
+	<info organisation="com.qmetry" module="qaf-support-openapi" status="release"  revision="${ivy.revision}" />
 	<configurations>
         <conf name="compile" description="Libraries needed for compilation" />
         <conf name="runtime" description="Libraries only needed at runtime" extends="compile" />
@@ -22,6 +22,6 @@
 		<dependency org="io.swagger.parser.v3" name="swagger-parser" rev="2.0.16" conf="compile->*"/>
 		<dependency org="ch.qos.logback" name="logback-classic" rev="1.2.3" conf="compile->default"/>
 		<dependency org="com.atlassian.oai" name="swagger-request-validator-core" rev="2.8.3" conf="compile->default"/>
-		<dependency org="com.qmetry" name="qaf-support-ws" rev="2.1.15"  conf="compile->*"/>
+		<dependency org="com.qmetry" name="qaf-support-ws" rev="${ivy.revision}"  conf="compile->*"/>
 	</dependencies>
 </ivy-module>
