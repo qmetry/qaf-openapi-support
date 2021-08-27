@@ -20,7 +20,7 @@
     </configurations>
 	<dependencies>
 		<dependency org="io.swagger.parser.v3" name="swagger-parser" rev="2.0.16" conf="compile->*"/>
-		<dependency org="ch.qos.logback" name="logback-classic" rev="1.2.3" conf="compile->default"/>
+		<!-- <dependency org="ch.qos.logback" name="logback-classic" rev="1.2.3" conf="compile->default"/> -->
 		<dependency org="com.atlassian.oai" name="swagger-request-validator-core" rev="2.8.3" conf="compile->default"/>
 		<dependency org="com.qmetry" name="qaf-support-ws" rev="latest.integration"  conf="compile->*"/>
 	</dependencies>

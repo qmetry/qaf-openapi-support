@@ -69,8 +69,8 @@ public class CodeGenTest {
 						"swaggerPetStore" },
 				{ "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/link-example.yaml",
 						"linkExample" },
-				{ "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/uspto.yaml",
-						StringUtil.toCamelCaseIdentifier("USPTO Data Set API") },
+//				{ "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/uspto.yaml",
+//						StringUtil.toCamelCaseIdentifier("USPTO Data Set API") },
 				{ "https://petstore.swagger.io/v2/swagger.json", "swaggerPetStore" } };
 	}
 
