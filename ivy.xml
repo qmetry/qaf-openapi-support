@@ -19,6 +19,7 @@
         <conf name="test" description="Libraries only needed for testing" extends="runtime" />
     </configurations>
 	<dependencies>
+		<dependency org="com.qmetry" name="qaf" rev="latest.integration"  conf="compile->*"/>
 		<dependency org="io.swagger.parser.v3" name="swagger-parser" rev="2.0.16" conf="compile->*"/>
 		<!-- <dependency org="ch.qos.logback" name="logback-classic" rev="1.2.3" conf="compile->default"/> -->
 		<dependency org="com.atlassian.oai" name="swagger-request-validator-core" rev="2.8.3" conf="compile->default"/>
