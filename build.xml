@@ -2,9 +2,6 @@
 
 <project basedir="." default="build" name="QualityAutomationFramework" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<get src="https://raw.githubusercontent.com/qmetry/qaf-parent/master/common-build-tasks.xml" dest="../common-build-tasks.xml" skipexisting="true"/>
-	<import file="../common-build-tasks.xml" optional="false" />
-
-
 
 	<property name="bin.dir" value="${basedir}/bin/src" />
 	<property name="bin.dir.test" value="${basedir}/bin/test" />
@@ -67,7 +64,7 @@
 		</testng>
 	</target>
 	<!-- ================================= target: build ================================= -->
-	<target name="build" depends="test, make-jar, gendoc, gensource" description="build framework, generate docs">
+	<target name="build" depends="make-jar, gendoc, gensource" description="build framework, generate docs">
 
 
 	</target>
@@ -92,5 +89,7 @@
 			</manifest>
 		</jar>
 	</target>
+	<import file="../common-build-tasks.xml" optional="false" />
+
 
 </project>
