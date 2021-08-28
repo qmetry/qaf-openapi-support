@@ -53,7 +53,7 @@
 	</target>
 	<target name="test" depends="test-compile">
 		<taskdef resource="testngtasks" classpathref="test.classpath" />
-		<testng classpathref="test.classpath" workingDir="${test.dir}" outputDir="${bin.dir.test}/test-results" haltOnFailure="true" verbose="2">
+		<testng classpathref="test.classpath" workingDir="${test.dir}" outputDir="${bin.dir.test}/test-results" haltOnFailure="false" verbose="2">
 			<classpath location="${bin.dir}" />
 			<classpath location="${bin.dir.test}" />
 			<classfileset dir="${bin.dir.test}" includes="**/*.class" />
