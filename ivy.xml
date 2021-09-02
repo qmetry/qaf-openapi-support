@@ -17,6 +17,7 @@
         <conf name="compile" description="Libraries needed for compilation" />
         <conf name="runtime" description="Libraries only needed at runtime" extends="compile" />
         <conf name="test" description="Libraries only needed for testing" extends="runtime" />
+        <conf name="provided" description="Needed for compile, but will be present on the target platform."/>        
     </configurations>
 	<dependencies>
 		<dependency org="com.qmetry" name="qaf" rev="latest.integration"  conf="compile->*"/>
