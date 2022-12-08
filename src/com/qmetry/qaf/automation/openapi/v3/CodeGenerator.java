@@ -29,6 +29,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -40,6 +41,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.qmetry.qaf.automation.util.FileUtil;
+import com.qmetry.qaf.automation.util.JSONUtil;
 import com.qmetry.qaf.automation.util.StringUtil;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -60,7 +62,9 @@ public class CodeGenerator {
 	private String tmplKey;
 
 	private OpenAPI api;
-	private XMLConfiguration config;
+	private Map<String, Map<String, Object>> config;
+	private XMLConfiguration dataConfig;
+
 	private Map<String, String> globalHeaders;
 	private Gson gson;
 	private String specUrl;
@@ -77,19 +81,23 @@ public class CodeGenerator {
 		this.api = api;
 		this.specUrl = specUrl;
 		gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-		config = new XMLConfiguration();
-		config.setDelimiterParsingDisabled(true);
-		config.setAttributeSplittingDisabled(true);
+		dataConfig = new XMLConfiguration();
+		dataConfig.setDelimiterParsingDisabled(true);
+		dataConfig.setAttributeSplittingDisabled(true);
+		config = new LinkedHashMap<String, Map<String, Object>>();
 	}
 
 	public void generate() throws ConfigurationException, IOException {
 		prefix = StringUtil.toCamelCaseIdentifier(api.getInfo().getTitle());
 		tmplKey = prefix + ".tmpl";
-
+		
+		Map<String, Object> tmpl = new LinkedHashMap<String, Object>();
+		config.put(tmplKey, tmpl);
+		
 		bddSrc = new StringBuffer("@Auto-generated \nFeature: " + api.getInfo().getTitle());
 		bddSrc.append("\n").append(api.getInfo().getDescription()).append("\n");
 
-		config.setProperty(tmplKey + ".baseUrl", api.getServers().get(0).getUrl());
+		tmpl.put("baseUrl", api.getServers().get(0).getUrl());
 		scanGlobalHeaders();
 
 		for (Entry<String, PathItem> entry : api.getPaths().entrySet()) {
@@ -100,12 +108,14 @@ public class CodeGenerator {
 			}
 		}
 
-		config.setProperty(tmplKey + ".headers", globalHeaders);
+		tmpl.put("headers", globalHeaders);
 		Map<String, String> globalParams = new HashMap<String, String>();
 		globalParams.put("specUrl", specUrl);
-		config.setProperty(tmplKey + ".parameters", gson.toJson(globalParams));
-
-		config.save("resources/" + prefix + ".xml");
+		tmpl.put("parameters", gson.toJson(globalParams));
+		
+		JSONUtil.writeJsonObjectToFile("resources/" + prefix + ".wscj", config);
+		//config.save("resources/" + prefix + ".wscj");
+		dataConfig.save("resources/" + prefix + "-data.xml");
 		FileUtil.write(new File("scenarios/"+prefix + "SanitySuite.feature"), bddSrc, Charset.defaultCharset());
 	}
 
@@ -116,9 +126,9 @@ public class CodeGenerator {
 		boolean hasResponseBody = false;
 
 		for (Entry<String, ApiResponse> entry : operation.getResponses().entrySet()) {
-			config.addProperty(responseKey + "(-1).statusCode", entry.getKey());
+			dataConfig.addProperty(responseKey + "(-1).statusCode", entry.getKey());
 			ApiResponse response = entry.getValue();
-			config.addProperty(responseKey + ".recId", response.getDescription());
+			dataConfig.addProperty(responseKey + ".recId", response.getDescription());
 			Map<String, Object> recparams = new HashMap<String, Object>(params);
 
 			if (response.getContent() != null && response.getContent().entrySet() != null) {
@@ -127,7 +137,7 @@ public class CodeGenerator {
 					hasResponseBody = true;
 				}
 			}
-			config.addProperty(responseKey + ".parameters", gson.toJson(recparams));
+			dataConfig.addProperty(responseKey + ".parameters", gson.toJson(recparams));
 
 		}
 
@@ -140,10 +150,13 @@ public class CodeGenerator {
 	private Map<String, Object> recordReqCall(String path, HttpMethod method, Operation operation) {
 		String rcPrefix = prefix + "." + StringUtil.toCamelCaseIdentifier(operation.getOperationId()) + "."
 				+ method.name().toLowerCase();
+		
+		Map<String, Object> reqCall = new LinkedHashMap<String, Object>();
+		config.put(rcPrefix, reqCall);
 
-		config.setProperty(rcPrefix + ".reference", tmplKey);
-		config.setProperty(rcPrefix + ".endPoint", path.replace("{", "${"));
-		config.setProperty(rcPrefix + ".method", method.name());
+		reqCall.put("reference", tmplKey);
+		reqCall.put("endPoint", path.replace("{", "${"));
+		reqCall.put("method", method.name());
 
 		List<Parameter> params = operation.getParameters();
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -175,7 +188,7 @@ public class CodeGenerator {
 					break;
 				case "body":
 					parameters.put("body", "");
-					config.setProperty(rcPrefix + ".body", "${body}");
+					reqCall.put("body", "${body}");
 					break;
 				default:
 					parameters.put(paramName, example);
@@ -184,13 +197,13 @@ public class CodeGenerator {
 			}
 
 			if (!headers.isEmpty()) {
-				config.setProperty(rcPrefix + ".headers", gson.toJson(headers));
+				reqCall.put("headers", headers);
 			}
 			if (!queryParameters.isEmpty()) {
-				config.setProperty(rcPrefix + ".query-parameters", gson.toJson(queryParameters));
+				reqCall.put("query-parameters", queryParameters);
 			}
 			if (!formParameters.isEmpty()) {
-				config.setProperty(rcPrefix + ".form-parameters", gson.toJson(formParameters));
+				reqCall.put("form-parameters", formParameters);
 			}
 		}
 
@@ -204,12 +217,12 @@ public class CodeGenerator {
 					}
 				}
 				headers.put("Content-Type", contenEntry.getKey());
-				config.setProperty(rcPrefix + ".headers", gson.toJson(headers));
+				reqCall.put("headers", headers);
 			}
 			if (!formParameters.isEmpty()) {
-				config.setProperty(rcPrefix + ".form-parameters", gson.toJson(formParameters));
+				reqCall.put("form-parameters", formParameters);
 			} else {
-				config.setProperty(rcPrefix + ".body", "${body}");
+				reqCall.put("body", "${body}");
 				parameters.put("body", "");
 			}
 		}
