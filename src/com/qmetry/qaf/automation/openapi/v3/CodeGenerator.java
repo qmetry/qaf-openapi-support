@@ -111,7 +111,7 @@ public class CodeGenerator {
 		tmpl.put("headers", globalHeaders);
 		Map<String, String> globalParams = new HashMap<String, String>();
 		globalParams.put("specUrl", specUrl);
-		tmpl.put("parameters", gson.toJson(globalParams));
+		tmpl.put("parameters", globalParams);
 		
 		JSONUtil.writeJsonObjectToFile("resources/" + prefix + ".wscj", config);
 		//config.save("resources/" + prefix + ".wscj");
