@@ -27,13 +27,9 @@ package com.qmetry.qaf.automation.openapi.v3;
 import static com.qmetry.qaf.automation.core.ConfigurationManager.getBundle;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
-
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.parser.OpenAPIV3Parser;
-import io.swagger.v3.parser.core.models.ParseOptions;
 
 /**
  * This class can be run through command line to generate request call
@@ -62,15 +58,9 @@ public class CodeGeneratorCLI {
 			}
 		}
 
-		System.out.println("Open API Specifications to process: " + Arrays.asList(getBundle().getStringArray("openapi.specUrl")));
-		for (String specUrl : getBundle().getStringArray("openapi.specUrl")) {
-			System.out.println("Processing: " + specUrl);
-			ParseOptions options = new ParseOptions();
-			options.setResolve(true);
-			options.setResolveFully(true);
-			OpenAPI api = new OpenAPIV3Parser().read(specUrl, null, options);
-			CodeGenerator codeGenerator = new CodeGenerator(specUrl, api);
-			codeGenerator.generate();
+		List<String> res = CodeGenerator.importWSC(getBundle().getStringArray("openapi.specUrl"));
+		if(null!=res && !res.isEmpty()) {
+			System.out.println("Genereted files: " + res);
 		}
 	}
 }
